@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- ====================================================================== 
+     23.11.2013 17:28:05                                                        
+
+     CardDeck    
+     description
+                   
+     Martin Locker                                                                
+     ====================================================================== -->
+<project name="CardDeck" default="RUN" basedir=".">
+	  <property name="sourceDir" value="src"/>
+	  <property name="classDir" value="build/classes"/>
+	  <property name="jarDir" value="build/jar"/>
+	  <property name="reportDir" value="build/report"/>
+	  <property name="sourceTestDir" value="test"/>
+	  <property name="libDir" value="lib"/>
+    <description>
+            description
+    </description>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+	<target name="init">
+	    <!-- Create the time stamp -->
+	    <tstamp/>
+
+	    <!-- Create the build directory structure used by compile -->
+	    <mkdir dir="${classDir}"/>
+	  </target>
+
+	<target name="compile" depends="init">
+        <javac srcdir="${sourceDir}" destdir="${classDir}"/>
+    </target>
+	
+    <target name="RUN">
+    	<java jar="${jarDir}/CardDeck.jar" fork="true"/>
+    </target>
+	
+    <target name="jar" depends="compile">
+        <mkdir dir="${jarDir}"/>
+   		<echo> Compiling... </echo>
+    	<jar destfile="${jarDir}/CardDeck.jar" basedir="${classDir}" includes="**/*.class">
+            <manifest>
+                <attribute name="Main-Class" value="de.fhl.lockemar.application.Application"/>
+            </manifest>
+        </jar>
+    </target>
+
+	<target name="unittest" depends="jar" >
+	    <mkdir dir="${reportDir}"/>
+
+	    <junit printsummary="yes" haltonfailure="no">
+	    	 
+	    <classpath>
+	    	<pathelement location="${sourceTestDir}" />
+	        <pathelement location="${classDir}"/>
+	        <pathelement location="${libDir}/junit.jar"/>
+	    	<pathelement location="${libDir}/easymock.jar"/>
+	    	<pathelement location="${jarDir}/CardDeck.jar"/>
+	        <pathelement path="${libDir}/junit.jar"/>
+	    	<pathelement path="${libDir}/easymock.jar"/>
+	    	<pathelement path="${jarDir}/CardDeck.jar"/>
+	    </classpath>
+			
+	      <formatter type="plain"/>
+	      <formatter type="xml"/>
+
+	      <batchtest fork="yes" todir="${reportDir}">
+	        <fileset dir="${sourceTestDir}">
+	          <include name="**/*Test.java"/>
+	        </fileset>
+	      </batchtest>
+
+	    </junit>
+
+	</target>
+	
+	
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" depends="depends" description="description">
+        
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>
